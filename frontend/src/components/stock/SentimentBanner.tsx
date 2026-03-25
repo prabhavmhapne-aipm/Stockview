@@ -26,8 +26,8 @@ export default function SentimentBanner({ sentiment, loading }: SentimentBannerP
         <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dot}`} />
         <span className={`text-sm font-semibold ${color}`}>{label}</span>
       </div>
-      <span className="text-xs text-text-3">news sentiment</span>
-      <div className="ml-auto flex items-center gap-4 text-xs text-text-3">
+      <span className="text-xs text-white/50">news sentiment</span>
+      <div className="ml-auto flex items-center gap-4 text-xs text-white/50">
         <span className="text-positive">{positiveCount} positive</span>
         <span className="text-negative">{negativeCount} negative</span>
         <span>{neutralCount} neutral</span>

@@ -53,7 +53,7 @@ export default function EarningsChart({ ticker }: EarningsChartProps) {
         <h2 className="text-sm font-semibold text-text-1 mb-4">
           Earnings History
         </h2>
-        <p className="text-text-3 text-sm text-center py-8">No earnings data available</p>
+        <p className="text-white/50 text-sm text-center py-8">No earnings data available</p>
       </div>
     )
   }
@@ -120,7 +120,7 @@ export default function EarningsChart({ ticker }: EarningsChartProps) {
             <thead>
               <tr className="border-b border-border">
                 {['Period', 'Actual EPS', 'Estimate', 'Surprise', 'Surprise %'].map((h) => (
-                  <th key={h} className="text-left text-xs text-text-3 pb-2 pr-4 font-medium">
+                  <th key={h} className="text-left text-xs text-white/50 pb-2 pr-4 font-medium">
                     {h}
                   </th>
                 ))}

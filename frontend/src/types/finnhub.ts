@@ -46,6 +46,22 @@ export interface FinnhubProfile {
   finnhubIndustry: string
 }
 
+export interface StockMetrics {
+  pe:             number | null
+  pb:             number | null
+  eps:            number | null
+  weekHigh52:     number | null
+  weekLow52:      number | null
+  weekHighDate52: string | null
+  weekLowDate52:  string | null
+  dividendYield:  number | null
+  beta:           number | null
+  roe:            number | null
+  debtToEquity:   number | null
+  epsGrowth:      number | null
+  revenueGrowth:  number | null
+}
+
 export interface FinnhubMetrics {
   metric: {
     '52WeekHigh': number

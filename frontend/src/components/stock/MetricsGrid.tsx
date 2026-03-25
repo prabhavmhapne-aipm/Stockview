@@ -3,6 +3,7 @@ import Skeleton from '../ui/Skeleton'
 import ErrorCard from '../ui/ErrorCard'
 import { useMetrics } from '../../hooks/useMetrics'
 import { useCurrency } from '../../lib/currency'
+import type { StockMetrics } from '../../types/finnhub'
 
 interface MetricsGridProps {
   ticker: string
@@ -70,18 +71,18 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
 
   if (isError) return <ErrorCard message="Failed to load metrics" onRetry={refetch} />
 
-  const m = data?.metric
-  const pe = m?.peBasicExclExtraTTM ?? m?.peExclExtraAnnual
-  const pb = m?.pbAnnual
-  const beta = m?.beta
-  const roe = m?.roeRfy
-  const de = m?.totalDebtToEquityAnnual
-  const eps52High = m?.['52WeekHigh'] as number | undefined
-  const eps52Low = m?.['52WeekLow'] as number | undefined
-  const div = m?.annualDividendYield
-  const epsGrowth = m?.epsGrowth3Y
-  const revGrowth = m?.revenueGrowth3Y
-  const eps = m?.epsBasicExclExtraItemsAnnual
+  const d = data as StockMetrics | undefined
+  const pe         = d?.pe
+  const pb         = d?.pb
+  const eps        = d?.eps
+  const eps52High  = d?.weekHigh52
+  const eps52Low   = d?.weekLow52
+  const div        = d?.dividendYield
+  const beta       = d?.beta
+  const roe        = d?.roe
+  const de         = d?.debtToEquity
+  const epsGrowth  = d?.epsGrowth
+  const revGrowth  = d?.revenueGrowth
 
   const peInt = interpretPE(pe)
   const pbInt = interpretPB(pb)
@@ -95,10 +96,29 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
       <div className="grid grid-cols-2 gap-3">
 
         <MetricCard
+          label="52-Week High"
+          value={fmt(eps52High !== undefined ? convert(eps52High) : eps52High, symbol)}
+          interpretation="Highest price in the past year"
+          trend="up"
+          sub={d?.weekHighDate52 ?? undefined}
+          tooltip={"The highest price the stock reached in the last 12 months.\n\nNear the high  🟢 Strong momentum, market confidence\nFar below high  🟡 Either a recovery opportunity or a declining trend — check the reason"}
+        />
+
+        <MetricCard
+          label="52-Week Low"
+          value={fmt(eps52Low !== undefined ? convert(eps52Low) : eps52Low, symbol)}
+          interpretation="Lowest price in the past year"
+          trend="down"
+          sub={d?.weekLowDate52 ?? undefined}
+          tooltip={"The lowest price the stock reached in the last 12 months.\n\nNear the low  🔴 Possible distress or value trap — check fundamentals\nFar above low  🟢 Has recovered strongly from its bottom"}
+        />
+
+        <MetricCard
           label="P/E Ratio (TTM)"
           value={pe ? `${pe.toFixed(1)}x` : '—'}
           interpretation={peInt.text}
           trend={peInt.trend}
+          tooltip={"How much investors pay for every $1 of earnings.\n\n< 12x  🟢 Cheap — possibly undervalued\n12–22x  🟡 Fair — reasonable for most sectors\n22–35x  🟠 Premium — high growth expected\n> 35x  🔴 Expensive — very high expectations priced in"}
         />
 
         <MetricCard
@@ -106,6 +126,7 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
           value={pb ? `${pb.toFixed(2)}x` : '—'}
           interpretation={pbInt.text}
           trend={pbInt.trend}
+          tooltip={"Compares stock price to the company's net asset value (book value).\n\n< 1x  🟢 Trading below assets — potential bargain\n1–3x  🟡 Reasonable premium\n3–10x  🟠 High — market pricing in growth or brand\n> 10x  🔴 Very high — typical for asset-light tech firms"}
         />
 
         <MetricCard
@@ -116,22 +137,7 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
             eps >= 0 ? 'Profitable — earning money per share' : 'Currently loss-making'
           }
           trend={(eps ?? 0) >= 0 ? 'up' : 'down'}
-        />
-
-        <MetricCard
-          label="52-Week High"
-          value={fmt(eps52High !== undefined ? convert(eps52High) : eps52High, symbol)}
-          interpretation="Highest price in the past year"
-          trend="up"
-          sub={m?.['52WeekHighDate'] as string | undefined}
-        />
-
-        <MetricCard
-          label="52-Week Low"
-          value={fmt(eps52Low !== undefined ? convert(eps52Low) : eps52Low, symbol)}
-          interpretation="Lowest price in the past year"
-          trend="down"
-          sub={m?.['52WeekLowDate'] as string | undefined}
+          tooltip={"Earnings Per Share — the profit a company makes for each share.\n\n> $0  🟢 Profitable\n< $0  🔴 Loss-making\n\nGrowing EPS year on year is a strong positive sign."}
         />
 
         <MetricCard
@@ -144,6 +150,7 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
             'High yield — check if it is sustainable'
           }
           trend={(div ?? 0) > 0 ? 'up' : 'neutral'}
+          tooltip={"Annual dividend paid out as a % of the current stock price.\n\n0%  ⚪ No dividend — reinvests for growth\n1–3%  🟡 Modest income, growth-focused\n3–5%  🟢 Healthy yield for income investors\n> 5%  🟠 High yield — verify it's sustainable"}
         />
 
         <MetricCard
@@ -151,6 +158,7 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
           value={fmt(beta)}
           interpretation={betaInt.text}
           trend={betaInt.trend as any}
+          tooltip={"Measures how much the stock moves compared to the overall market (S&P 500 = 1.0).\n\n< 0.7  🟢 Low volatility — defensive, stable\n0.7–1.2  🟡 Moves with the market\n1.2–1.8  🟠 More volatile — higher risk & reward\n> 1.8  🔴 Highly volatile — expect large price swings"}
         />
 
         <MetricCard
@@ -158,6 +166,7 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
           value={fmt(roe, '', '%', 1)}
           interpretation={roeInt.text}
           trend={roeInt.trend}
+          tooltip={"Return on Equity — how much profit the company generates from shareholder money.\n\n< 0%  🔴 Losing money on equity\n0–10%  🟠 Below average efficiency\n10–20%  🟡 Solid returns\n> 20%  🟢 Excellent — management creates strong value"}
         />
 
         <MetricCard
@@ -165,10 +174,11 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
           value={fmt(de, '', 'x')}
           interpretation={deInt.text}
           trend={deInt.trend}
+          tooltip={"Total debt divided by shareholder equity. Shows how leveraged the company is.\n\n< 0.5x  🟢 Conservative — low financial risk\n0.5–1x  🟡 Manageable debt level\n1–2x  🟠 Elevated — worth monitoring\n> 2x  🔴 High leverage — increases bankruptcy risk"}
         />
 
         <MetricCard
-          label="EPS Growth 3Y"
+          label="EPS Growth"
           value={fmt(epsGrowth, '', '%', 1)}
           interpretation={
             epsGrowth === undefined || epsGrowth === null ? 'Data unavailable' :
@@ -177,10 +187,11 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
             'Earnings have been shrinking'
           }
           trend={(epsGrowth ?? 0) > 0 ? 'up' : 'down'}
+          tooltip={"How fast earnings per share have grown over the past 3 years (annualised).\n\n> 15%  🟢 Strong growth trajectory\n0–15%  🟡 Modest but positive\n< 0%  🔴 Earnings are shrinking — investigate why"}
         />
 
         <MetricCard
-          label="Revenue Growth 3Y"
+          label="Revenue Growth"
           value={fmt(revGrowth, '', '%', 1)}
           interpretation={
             revGrowth === undefined || revGrowth === null ? 'Data unavailable' :
@@ -189,6 +200,7 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
             'Revenue has been declining'
           }
           trend={(revGrowth ?? 0) > 0 ? 'up' : 'down'}
+          tooltip={"How fast the company's total sales have grown over the past 3 years (annualised).\n\n> 15%  🟢 Fast-growing business\n0–15%  🟡 Steady expansion\n< 0%  🔴 Revenue is declining — check market conditions"}
         />
 
       </div>

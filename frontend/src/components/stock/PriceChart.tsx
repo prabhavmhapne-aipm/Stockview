@@ -18,11 +18,11 @@ function CustomTooltip({ active, payload, symbol }: any) {
     <div className="bg-surface-2 border border-border rounded-xl p-3 text-xs shadow-float">
       <p className="text-text-2 mb-2 font-medium">{d.timeLabel}</p>
       <div className="grid grid-cols-2 gap-x-5 gap-y-1">
-        <span className="text-text-3">Open</span>   <span className="text-text-1 font-mono tabular-nums">{symbol}{d.open.toFixed(2)}</span>
-        <span className="text-text-3">Close</span>  <span className="text-text-1 font-mono tabular-nums">{symbol}{d.close.toFixed(2)}</span>
-        <span className="text-text-3">High</span>   <span className="text-positive font-mono tabular-nums">{symbol}{d.high.toFixed(2)}</span>
-        <span className="text-text-3">Low</span>    <span className="text-negative font-mono tabular-nums">{symbol}{d.low.toFixed(2)}</span>
-        <span className="text-text-3">Volume</span> <span className="text-text-2 font-mono tabular-nums">{(d.volume / 1_000_000).toFixed(1)}M</span>
+        <span className="text-white/50">Open</span>   <span className="text-text-1 font-mono tabular-nums">{symbol}{d.open.toFixed(2)}</span>
+        <span className="text-white/50">Close</span>  <span className="text-text-1 font-mono tabular-nums">{symbol}{d.close.toFixed(2)}</span>
+        <span className="text-white/50">High</span>   <span className="text-positive font-mono tabular-nums">{symbol}{d.high.toFixed(2)}</span>
+        <span className="text-white/50">Low</span>    <span className="text-negative font-mono tabular-nums">{symbol}{d.low.toFixed(2)}</span>
+        <span className="text-white/50">Volume</span> <span className="text-text-2 font-mono tabular-nums">{(d.volume / 1_000_000).toFixed(1)}M</span>
       </div>
     </div>
   )
@@ -83,7 +83,7 @@ export default function PriceChart() {
       </div>
 
       {!convertedCandles || convertedCandles.length === 0 ? (
-        <div className="h-72 flex items-center justify-center text-text-3 text-sm">
+        <div className="h-72 flex items-center justify-center text-white/50 text-sm">
           No chart data for this period
         </div>
       ) : (

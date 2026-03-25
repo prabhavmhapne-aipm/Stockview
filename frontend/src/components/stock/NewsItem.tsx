@@ -32,15 +32,15 @@ export default function NewsItem({ item }: NewsItemProps) {
           {item.headline}
         </p>
         <div className="flex items-center gap-2 mt-2 flex-wrap">
-          <span className="text-xs text-text-3">{item.source}</span>
-          <span className="text-xs text-text-3">·</span>
-          <span className="text-xs text-text-3">{timeAgo}</span>
+          <span className="text-xs text-white/50">{item.source}</span>
+          <span className="text-xs text-white/50">·</span>
+          <span className="text-xs text-white/50">{timeAgo}</span>
           <Badge variant={item.sentimentLabel}>
             {item.sentimentLabel.charAt(0).toUpperCase() + item.sentimentLabel.slice(1)}
           </Badge>
         </div>
       </div>
-      <ExternalLink className="w-4 h-4 text-text-3 flex-shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <ExternalLink className="w-4 h-4 text-white/50 flex-shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
     </a>
   )
 }

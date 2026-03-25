@@ -15,7 +15,7 @@ export default function NewsFeed({ ticker }: NewsFeedProps) {
       <div className="px-5 py-4 border-b border-border flex items-center">
         <h2 className="text-sm font-semibold text-text-1">News</h2>
         {data?.news.length !== undefined && (
-          <span className="ml-auto text-xs text-text-3">{data.news.length} articles</span>
+          <span className="ml-auto text-xs text-white/50">{data.news.length} articles</span>
         )}
       </div>
 
@@ -38,7 +38,7 @@ export default function NewsFeed({ ticker }: NewsFeedProps) {
             <ErrorCard message="Failed to load news" onRetry={refetch} />
           </div>
         ) : !data?.news.length ? (
-          <div className="flex flex-col items-center justify-center py-12 text-text-3">
+          <div className="flex flex-col items-center justify-center py-12 text-white/50">
             <Newspaper className="w-8 h-8 mb-2 opacity-50" />
             <p className="text-sm">No recent news found</p>
           </div>

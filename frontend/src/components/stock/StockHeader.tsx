@@ -57,7 +57,7 @@ export default function StockHeader({ ticker, profile, quote, profileLoading, qu
                   {profile?.finnhubIndustry && <span className="tag tag-default">{profile.finnhubIndustry}</span>}
                   {profile?.weburl && (
                     <a href={profile.weburl} target="_blank" rel="noreferrer"
-                      className="text-xs text-text-3 hover:text-accent transition-colors flex items-center gap-1">
+                      className="text-xs text-white/50 hover:text-accent transition-colors flex items-center gap-1">
                       <Globe className="w-3 h-3" /> Website
                     </a>
                   )}
@@ -78,7 +78,7 @@ export default function StockHeader({ ticker, profile, quote, profileLoading, qu
                   {symbol}{fmt(quote?.c !== undefined ? convert(quote.c) : undefined)}
                 </span>
                 <span className="live-dot" title="Live price" />
-                {quoteUpdating && <RefreshCw className="w-3.5 h-3.5 text-text-3 animate-spin" />}
+                {quoteUpdating && <RefreshCw className="w-3.5 h-3.5 text-white/50 animate-spin" />}
               </div>
 
               <div className={`flex items-center gap-1.5 text-sm font-medium ${isUp ? 'text-positive' : 'text-negative'}`}>
@@ -89,7 +89,7 @@ export default function StockHeader({ ticker, profile, quote, profileLoading, qu
               </div>
 
               {profile?.marketCapitalization && (
-                <span className="text-xs text-text-3 tabular-nums">
+                <span className="text-xs text-white/50 tabular-nums">
                   Mkt Cap {fmtMarketCap(convert(profile.marketCapitalization), symbol)}
                 </span>
               )}
@@ -108,7 +108,7 @@ export default function StockHeader({ ticker, profile, quote, profileLoading, qu
             { label: 'Close', value: quote.pc },
           ] as const).map(({ label, value }) => (
             <div key={label}>
-              <p className="text-[10px] font-medium text-text-3 uppercase tracking-wider mb-1">{label}</p>
+              <p className="text-[10px] font-medium text-white/50 uppercase tracking-wider mb-1">{label}</p>
               <p className="text-sm font-mono font-semibold text-text-1 tabular-nums">{symbol}{fmt(convert(value))}</p>
             </div>
           ))}

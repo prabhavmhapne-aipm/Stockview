@@ -52,7 +52,7 @@ export default function DividendChart({ ticker }: DividendChartProps) {
     return (
       <div className="card p-5">
         <h2 className="text-sm font-semibold text-text-1 mb-4">Dividend per Share</h2>
-        <p className="text-text-3 text-sm text-center py-8">No dividends paid</p>
+        <p className="text-white/50 text-sm text-center py-8">No dividends paid</p>
       </div>
     )
   }
