@@ -3,5 +3,5 @@ dist
 .env
 .env.local
 *.local
-data/
-docs/
+/data/
+/docs/
