@@ -15,7 +15,7 @@ interface TickerState {
 export const useTickerStore = create<TickerState>((set) => ({
   activeTicker: '',
   selectedRange: '1M',
-  currency: 'USD',
+  currency: 'EUR',
   setTicker: (ticker) => set({ activeTicker: ticker }),
   setRange: (range) => set({ selectedRange: range }),
   setCurrency: (currency) => set({ currency }),

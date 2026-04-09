@@ -2,6 +2,7 @@ import { TrendingUp, TrendingDown, Globe, RefreshCw } from 'lucide-react'
 import type { FinnhubProfile, FinnhubQuote } from '../../types/finnhub'
 import Skeleton from '../ui/Skeleton'
 import { useCurrency } from '../../lib/currency'
+import { STOCK_IDENTIFIERS } from '../../data/stockIdentifiers'
 
 interface StockHeaderProps {
   ticker: string
@@ -53,6 +54,12 @@ export default function StockHeader({ ticker, profile, quote, profileLoading, qu
                 <h1 className="text-lg font-bold text-text-1 truncate">{profile?.name || ticker}</h1>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                   <span className="text-xs font-mono font-semibold text-accent">{ticker}</span>
+                  {STOCK_IDENTIFIERS[ticker] && (
+                    <>
+                      <span className="tag tag-default">WKN {STOCK_IDENTIFIERS[ticker].wkn}</span>
+                      <span className="tag tag-default">ISIN {STOCK_IDENTIFIERS[ticker].isin}</span>
+                    </>
+                  )}
                   {profile?.exchange && <span className="tag tag-default">{profile.exchange}</span>}
                   {profile?.finnhubIndustry && <span className="tag tag-default">{profile.finnhubIndustry}</span>}
                   {profile?.weburl && (
@@ -67,51 +74,84 @@ export default function StockHeader({ ticker, profile, quote, profileLoading, qu
           </div>
         </div>
 
-        {/* Live price */}
-        <div className="flex flex-col sm:items-end gap-1">
-          {quoteLoading ? (
-            <><Skeleton className="h-9 w-32 mb-1" /><Skeleton className="h-5 w-24" /></>
-          ) : (
-            <>
-              <div className="flex items-center gap-2.5">
-                <span className="text-[2rem] font-bold font-mono text-text-1 tabular-nums leading-none">
-                  {symbol}{fmt(quote?.c !== undefined ? convert(quote.c) : undefined)}
-                </span>
-                <span className="live-dot" title="Live price" />
-                {quoteUpdating && <RefreshCw className="w-3.5 h-3.5 text-white/50 animate-spin" />}
-              </div>
-
-              <div className={`flex items-center gap-1.5 text-sm font-medium ${isUp ? 'text-positive' : 'text-negative'}`}>
-                {isUp ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-                <span className="tabular-nums">
-                  {isUp ? '+' : '-'}{symbol}{fmt(Math.abs(convert(quote?.d ?? 0)))} ({isUp ? '+' : ''}{fmt(quote?.dp)}%)
-                </span>
-              </div>
-
-              {profile?.marketCapitalization && (
-                <span className="text-xs text-white/50 tabular-nums">
-                  Mkt Cap {fmtMarketCap(convert(profile.marketCapitalization), symbol)}
-                </span>
-              )}
-            </>
-          )}
-        </div>
       </div>
 
-      {/* OHLC strip */}
+      {/* OHLC strip + Live price */}
       {!quoteLoading && quote && (
-        <div className="mt-5 pt-4 border-t border-border grid grid-cols-4 gap-4">
-          {([
-            { label: 'Open',  value: quote.o  },
-            { label: 'High',  value: quote.h  },
-            { label: 'Low',   value: quote.l  },
-            { label: 'Close', value: quote.pc },
-          ] as const).map(({ label, value }) => (
-            <div key={label}>
-              <p className="text-[10px] font-medium text-white/50 uppercase tracking-wider mb-1">{label}</p>
-              <p className="text-sm font-mono font-semibold text-text-1 tabular-nums">{symbol}{fmt(convert(value))}</p>
+        <div className="mt-5 pt-4 border-t border-border flex items-center gap-4">
+          {/* Live price — far left */}
+          <div className="flex flex-col items-start gap-1 flex-shrink-0 pr-4 border-r border-border w-52">
+            <div className="flex items-center gap-2.5">
+              <span className="text-[2.6rem] font-bold font-mono text-text-1 tabular-nums leading-none">
+                {symbol}{fmt(quote?.c !== undefined ? convert(quote.c) : undefined)}
+              </span>
+              <span className="live-dot" title="Live price" />
+              {quoteUpdating && <RefreshCw className="w-4 h-4 text-white/50 animate-spin" />}
             </div>
-          ))}
+            <div className={`flex items-center gap-1.5 text-base font-medium ${isUp ? 'text-positive' : 'text-negative'}`}>
+              {isUp ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+              <span className="tabular-nums">
+                {isUp ? '+' : '-'}{symbol}{fmt(Math.abs(convert(quote?.d ?? 0)))} ({isUp ? '+' : ''}{fmt(quote?.dp)}%)
+              </span>
+            </div>
+            {profile?.marketCapitalization && (
+              <span className="text-sm text-white/50 tabular-nums">
+                Mkt Cap {fmtMarketCap(convert(profile.marketCapitalization), symbol)}
+              </span>
+            )}
+          </div>
+
+          <div className="flex justify-start gap-8 flex-1">
+            {([
+              { label: 'Open',  value: quote.o  },
+              { label: 'High',  value: quote.h  },
+              { label: 'Low',   value: quote.l  },
+              { label: 'Close', value: quote.pc },
+            ] as const).map(({ label, value }) => (
+              <div key={label}>
+                <p className="text-[10px] font-medium text-white/50 uppercase tracking-wider mb-1">{label}</p>
+                <p className="text-sm font-mono font-semibold text-text-1 tabular-nums">{symbol}{fmt(convert(value))}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Trading panel */}
+          {(() => {
+            const mid = convert(quote.c)
+            const spread = mid * 0.0005
+            const sellPrice = mid - spread
+            const buyPrice  = mid + spread
+            return (
+              <div className="flex-shrink-0 pl-4 border-l border-border flex flex-col gap-2 w-80">
+                {/* Set up now header */}
+                <div className="flex items-stretch gap-3 bg-[#102e28] rounded-xl overflow-hidden">
+                  <div className="flex items-center justify-center w-12 bg-[#1a4a3e] flex-shrink-0 px-3">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-accent">
+                    <path d="M1.5 4v6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M22.5 20v-6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1.5 10M22.5 14l-4.14 4.36A9 9 0 0 1 3.51 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  </div>
+                  <div className="flex flex-col gap-0.5 py-1">
+                    <span className="text-lg text-accent leading-tight">Set up now</span>
+                    <span className="text-sm text-white/40 leading-tight">Savings plan</span>
+                  </div>
+                </div>
+                {/* Sell / Buy buttons */}
+                <div className="flex gap-2">
+                  <button className="flex flex-col items-center py-3 rounded-lg bg-[#3d1a1a] hover:bg-[#4d2020] transition-colors flex-1">
+                    <span className="text-sm font-bold text-negative">Sell</span>
+                    <span className="text-xs font-mono text-white/50 tabular-nums mt-0.5">{symbol}{fmt(sellPrice)}</span>
+                  </button>
+                  <button className="flex flex-col items-center py-3 rounded-lg bg-accent hover:opacity-90 transition-opacity flex-1">
+                    <span className="text-sm font-bold text-black">Buy</span>
+                    <span className="text-xs font-mono text-black/60 tabular-nums mt-0.5">{symbol}{fmt(buyPrice)}</span>
+                  </button>
+                </div>
+              </div>
+            )
+          })()}
+
         </div>
       )}
     </div>

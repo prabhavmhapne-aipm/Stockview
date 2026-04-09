@@ -91,15 +91,15 @@ export default function EarningsChart({ ticker }: EarningsChartProps) {
       {view === 'chart' ? (
         <ResponsiveContainer width="100%" height={240}>
           <BarChart data={chartData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#2e3147" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#2c2e31" vertical={false} />
             <XAxis
               dataKey="period"
-              tick={{ fill: '#5c6180', fontSize: 11 }}
+              tick={{ fill: '#4a4f56', fontSize: 11 }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              tick={{ fill: '#5c6180', fontSize: 11 }}
+              tick={{ fill: '#4a4f56', fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               tickFormatter={(v) => `${symbol}${convert(v).toFixed(2)}`}
@@ -107,11 +107,11 @@ export default function EarningsChart({ ticker }: EarningsChartProps) {
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              wrapperStyle={{ fontSize: '12px', color: '#9ca3bf', paddingTop: '8px' }}
+              wrapperStyle={{ fontSize: '12px', color: '#8a8f96', paddingTop: '8px' }}
             />
-            <ReferenceLine y={0} stroke="#2e3147" />
-            <Bar dataKey="Actual" fill="#6366f1" radius={[3, 3, 0, 0]} maxBarSize={24} />
-            <Bar dataKey="Estimate" fill="#3f4266" radius={[3, 3, 0, 0]} maxBarSize={24} />
+            <ReferenceLine y={0} stroke="#2c2e31" />
+            <Bar dataKey="Actual" fill="#28EBCF" radius={[3, 3, 0, 0]} maxBarSize={24} />
+            <Bar dataKey="Estimate" fill="#2c2e31" radius={[3, 3, 0, 0]} maxBarSize={24} />
           </BarChart>
         </ResponsiveContainer>
       ) : (

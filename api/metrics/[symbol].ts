@@ -1,8 +1,6 @@
-import { Router } from 'express'
-import finnhub from '../lib/finnhubClient'
-import yahoo, { getYahooCrumb } from '../lib/yahooFinance'
-
-const router = Router()
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+import finnhub from '../_lib/finnhubClient'
+import yahoo, { getYahooCrumb } from '../_lib/yahooFinance'
 
 function raw(val: any): number | null {
   if (val == null) return null
@@ -18,7 +16,6 @@ function coalesce(...vals: (number | null | undefined)[]): number | null {
   return null
 }
 
-// Hardcoded Net Income fallback (TTM, in USD) for prototype
 const NET_INCOME_FALLBACK: Record<string, number> = {
   META:   62400000000,
   AAPL:   93700000000,
@@ -42,8 +39,8 @@ const NET_INCOME_FALLBACK: Record<string, number> = {
   'RHM.DE':  1300000000,
 }
 
-router.get('/:symbol', async (req, res) => {
-  const symbol = req.params.symbol
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const symbol = req.query.symbol as string
 
   const crumbPromise = getYahooCrumb().catch(() => null)
 
@@ -70,7 +67,6 @@ router.get('/:symbol', async (req, res) => {
     }
   }
 
-  // Normalise Yahoo values to the same units as Finnhub
   const yDivYield  = raw(sd.trailingAnnualDividendYield) != null ? raw(sd.trailingAnnualDividendYield)! * 100
                    : raw(sd.dividendYield) != null ? raw(sd.dividendYield)! * 100 : null
   const yRoe       = raw(fd.returnOnEquity)  != null ? raw(fd.returnOnEquity)!  * 100 : null
@@ -92,12 +88,9 @@ router.get('/:symbol', async (req, res) => {
     debtToEquity:   coalesce(fm.totalDebtToEquityAnnual, yDebt),
     epsGrowth:      coalesce(fm.epsGrowth3Y,          yEpsGrowth),
     revenueGrowth:  coalesce(fm.revenueGrowth3Y,      yRevGrowth),
-    // Financials
     revenue:        raw(fd.totalRevenue),
     netIncome:      raw(fd.netIncomeToCommon) ?? NET_INCOME_FALLBACK[symbol] ?? null,
     revenueGrowthYoY: raw(fd.revenueGrowth) != null ? raw(fd.revenueGrowth)! * 100 : null,
     profitMargin:   raw(fd.profitMargins)   != null ? raw(fd.profitMargins)!  * 100 : null,
   })
-})
-
-export default router
+}

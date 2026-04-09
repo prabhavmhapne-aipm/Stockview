@@ -62,15 +62,15 @@ export default function DividendChart({ ticker }: DividendChartProps) {
       <h2 className="text-sm font-semibold text-text-1 mb-4">Dividend per Share</h2>
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={chartData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1a2540" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#2c2e31" vertical={false} />
           <XAxis
             dataKey="year"
-            tick={{ fill: '#3a5070', fontSize: 11 }}
+            tick={{ fill: '#4a4f56', fontSize: 11 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: '#3a5070', fontSize: 11 }}
+            tick={{ fill: '#4a4f56', fontSize: 11 }}
             axisLine={false}
             tickLine={false}
             tickFormatter={(v) => `${symbol}${v.toFixed(2)}`}
@@ -81,7 +81,7 @@ export default function DividendChart({ ticker }: DividendChartProps) {
             {chartData.map((entry, i) => (
               <Cell
                 key={i}
-                fill={i === chartData.length - 1 ? '#00c4a0' : '#1a3a5c'}
+                fill={i === chartData.length - 1 ? '#28EBCF' : '#2c2e31'}
               />
             ))}
           </Bar>

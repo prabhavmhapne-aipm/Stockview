@@ -1,4 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#6366f1"/>
-  <polyline points="6,22 12,14 17,18 26,8" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="32" height="32" rx="7" fill="#111"/>
+  <clipPath id="c">
+    <rect width="32" height="32" rx="7"/>
+  </clipPath>
+  <g clip-path="url(#c)">
+    <!-- Upper teal block (top-right area) -->
+    <polygon points="3,3 29,3 29,20 3,8" fill="#00c4a0"/>
+    <!-- Dark top-left corner cut -->
+    <polygon points="3,3 16,3 3,14" fill="#111"/>
+    <!-- Lower teal block (bottom-left area) -->
+    <polygon points="3,12 29,24 29,29 3,29" fill="#00c4a0"/>
+    <!-- Dark bottom-right corner cut -->
+    <polygon points="16,29 29,29 29,22" fill="#111"/>
+  </g>
 </svg>

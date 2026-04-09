@@ -8,17 +8,17 @@
   * { box-sizing: border-box; }
 
   body {
-    background-color: #07090f;
-    color: #f0f4ff;
+    background-color: #101112;
+    color: #ffffff;
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   ::-webkit-scrollbar       { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: #0c1120; }
-  ::-webkit-scrollbar-thumb { background: #1a2540; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #243660; }
+  ::-webkit-scrollbar-track { background: #1a1b1d; }
+  ::-webkit-scrollbar-thumb { background: #2c2e31; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3d42; }
 }
 
 @layer components {
@@ -32,7 +32,7 @@
 
   /* Skeleton shimmer */
   .skeleton {
-    background: linear-gradient(90deg, #0c1120 25%, #111827 50%, #0c1120 75%);
+    background: linear-gradient(90deg, #1a1b1d 25%, #222426 50%, #1a1b1d 75%);
     background-size: 1000px 100%;
     animation: shimmer 1.5s infinite;
     border-radius: 8px;

@@ -53,7 +53,7 @@ export default function SearchBar() {
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search stocks — AAPL, Tesla, SAP…"
+          placeholder="Search or ask a question"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); setSelectedIndex(-1) }}
           onFocus={() => query && setOpen(true)}

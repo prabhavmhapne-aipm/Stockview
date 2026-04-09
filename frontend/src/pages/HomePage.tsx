@@ -16,7 +16,7 @@ const STOCK_GROUPS = [
   },
   {
     label: 'US Growth',
-    sublabel: 'Finance, defense & emerging tech',
+    sublabel: 'Finance & defense',
     stocks: [
       { symbol: 'TSLA', name: 'Tesla' },
       { symbol: 'PLTR', name: 'Palantir' },
@@ -49,14 +49,16 @@ export default function HomePage() {
     <PageShell>
       {/* Hero */}
       <div className="pt-16 pb-14">
-        <p className="text-xs font-medium text-accent uppercase tracking-wider mb-5">Stock Intelligence</p>
+        <p className="text-xs font-medium text-accent uppercase tracking-wider mb-5">Insights+</p>
         <h1 className="text-4xl sm:text-5xl font-bold text-text-1 leading-[1.1] tracking-tight mb-5">
-          Everything about a stock.<br />
-          <span className="text-text-2 font-normal">In plain English.</span>
+          All your Stock Intelligence<br />
+          at one place.
         </h1>
-        <p className="text-text-2 text-base max-w-md leading-relaxed">
-          Live prices, key metrics, news sentiment, and earnings history — curated for the stocks that matter.
-        </p>
+        <ul className="text-text-1 text-base leading-relaxed space-y-1.5 list-none whitespace-nowrap">
+          <li>Know how many Scalable users are currently buying, selling, and holding</li>
+          <li>AI-powered news sentiment: bullish, bearish, or mixed</li>
+          <li>AI interpretation of every metric based on sector, competitors, past earnings and expected growth rate</li>
+        </ul>
       </div>
 
       {/* Stock groups */}
@@ -84,25 +86,6 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Capability strip */}
-      <div className="border-t border-border pt-8 pb-14">
-        <div className="flex flex-wrap gap-x-8 gap-y-2">
-          {[
-            ['Live quotes',       'price updates every 15 seconds'],
-            ['News sentiment',    'bullish / bearish signal from latest headlines'],
-            ['Key metrics',       'P/E, P/B, EPS, beta, dividend yield and more'],
-            ['Earnings history',  'actual vs estimate, quarter by quarter'],
-            ['Dividend history',  'annual payout trend by year'],
-            ['USD / EUR',         'switch currencies across all prices'],
-            ['Live finance TV',   'Bloomberg, CNBC, Euronews and more'],
-          ].map(([title, desc]) => (
-            <span key={title} className="text-sm text-text-3">
-              <span className="text-text-2 font-medium">{title}</span>
-              {' — '}{desc}
-            </span>
-          ))}
-        </div>
-      </div>
     </PageShell>
   )
 }

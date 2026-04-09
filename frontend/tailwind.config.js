@@ -4,21 +4,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Scalable Capital dark navy palette
+        // Scalable Capital brand palette
         surface: {
-          0: '#07090f',   // page background — deepest navy
-          1: '#0c1120',   // card background
-          2: '#111827',   // elevated card / hover
-          3: '#1a2540',   // border-level surface
+          0: '#101112',   // Woodsmoke — page background
+          1: '#1a1b1d',   // card background
+          2: '#222426',   // elevated card / hover
+          3: '#2c2e31',   // border-level surface
         },
         accent: {
-          DEFAULT: '#00c4a0',   // Scalable Capital teal
-          light:   '#33d4b5',
-          dark:    '#009e82',
+          DEFAULT: '#28EBCF',   // Bright Turquoise
+          light:   '#5df0da',
+          dark:    '#1abfaa',
         },
         positive: {
-          DEFAULT: '#00c4a0',   // teal = positive (matches accent)
-          bg:      'rgba(0,196,160,0.10)',
+          DEFAULT: '#28EBCF',   // teal = positive (matches accent)
+          bg:      'rgba(40,235,207,0.10)',
         },
         negative: {
           DEFAULT: '#f43f5e',   // rose red
@@ -29,11 +29,11 @@ export default {
           bg:      'rgba(245,158,11,0.10)',
         },
         text: {
-          1: '#f0f4ff',   // primary — near white with blue tint
-          2: '#7890a8',   // secondary — muted blue-gray
-          3: '#3a5070',   // tertiary — dim
+          1: '#ffffff',   // primary — white
+          2: '#8a8f96',   // secondary — muted gray
+          3: '#4a4f56',   // tertiary — dim
         },
-        border: '#1a2540',
+        border: '#2c2e31',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

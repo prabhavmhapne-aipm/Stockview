@@ -58,8 +58,12 @@ export interface StockMetrics {
   beta:           number | null
   roe:            number | null
   debtToEquity:   number | null
-  epsGrowth:      number | null
-  revenueGrowth:  number | null
+  epsGrowth:        number | null
+  revenueGrowth:    number | null
+  revenue:          number | null
+  netIncome:        number | null
+  revenueGrowthYoY: number | null
+  profitMargin:     number | null
 }
 
 export interface FinnhubMetrics {

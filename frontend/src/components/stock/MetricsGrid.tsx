@@ -1,4 +1,5 @@
 import MetricCard from './MetricCard'
+import AIInterpretation from './AIInterpretation'
 import Skeleton from '../ui/Skeleton'
 import ErrorCard from '../ui/ErrorCard'
 import { useMetrics } from '../../hooks/useMetrics'
@@ -43,7 +44,7 @@ function interpretPB(pb?: number | null): { text: string; trend: 'up' | 'down' |
   if (pb < 1)   return { text: 'Trading below book value — potentially undervalued', trend: 'up' }
   if (pb < 3)   return { text: 'Reasonable premium to book value', trend: 'neutral' }
   if (pb < 10)  return { text: 'High premium — market prices in intangibles or growth', trend: 'warning' }
-  return         { text: 'Very high — typical for asset-light businesses', trend: 'warning' }
+  return         { text: 'Very high — typical for asset-light businesses', trend: 'down' }
 }
 
 function interpretDebt(de?: number | null): { text: string; trend: 'up' | 'down' | 'warning' | 'neutral' } {
@@ -72,17 +73,21 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
   if (isError) return <ErrorCard message="Failed to load metrics" onRetry={refetch} />
 
   const d = data as StockMetrics | undefined
-  const pe         = d?.pe
-  const pb         = d?.pb
-  const eps        = d?.eps
-  const eps52High  = d?.weekHigh52
-  const eps52Low   = d?.weekLow52
-  const div        = d?.dividendYield
-  const beta       = d?.beta
-  const roe        = d?.roe
-  const de         = d?.debtToEquity
-  const epsGrowth  = d?.epsGrowth
-  const revGrowth  = d?.revenueGrowth
+  const pe             = d?.pe
+  const pb             = d?.pb
+  const eps            = d?.eps
+  const eps52High      = d?.weekHigh52
+  const eps52Low       = d?.weekLow52
+  const div            = d?.dividendYield
+  const beta           = d?.beta
+  const roe            = d?.roe
+  const de             = d?.debtToEquity
+  const epsGrowth      = d?.epsGrowth
+  const revGrowth      = d?.revenueGrowth
+  const revenue        = d?.revenue
+  const netIncome      = d?.netIncome
+  const revGrowthYoY   = d?.revenueGrowthYoY
+  const profitMargin   = d?.profitMargin
 
   const peInt = interpretPE(pe)
   const pbInt = interpretPB(pb)
@@ -92,6 +97,7 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
 
   return (
     <div className="card p-5">
+      <AIInterpretation ticker={ticker} />
       <h2 className="text-sm font-semibold text-text-1 mb-5">Key Metrics</h2>
       <div className="grid grid-cols-2 gap-3">
 
@@ -149,7 +155,7 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
             div < 5 ? 'Healthy dividend for income investors' :
             'High yield — check if it is sustainable'
           }
-          trend={(div ?? 0) > 0 ? 'up' : 'neutral'}
+          trend={!div || div === 0 ? 'neutral' : div < 2 ? 'neutral' : div < 5 ? 'up' : 'warning'}
           tooltip={"Annual dividend paid out as a % of the current stock price.\n\n0%  ⚪ No dividend — reinvests for growth\n1–3%  🟡 Modest income, growth-focused\n3–5%  🟢 Healthy yield for income investors\n> 5%  🟠 High yield — verify it's sustainable"}
         />
 
@@ -199,10 +205,39 @@ export default function MetricsGrid({ ticker }: MetricsGridProps) {
             revGrowth > 0  ? 'Steady revenue expansion' :
             'Revenue has been declining'
           }
-          trend={(revGrowth ?? 0) > 0 ? 'up' : 'down'}
+          trend={(revGrowth ?? 0) > 15 ? 'up' : (revGrowth ?? 0) > 0 ? 'neutral' : 'down'}
           tooltip={"How fast the company's total sales have grown over the past 3 years (annualised).\n\n> 15%  🟢 Fast-growing business\n0–15%  🟡 Steady expansion\n< 0%  🔴 Revenue is declining — check market conditions"}
         />
 
+      </div>
+
+      {/* Financials */}
+      <h2 className="text-sm font-semibold text-text-1 mt-6 mb-4">Financials</h2>
+      <div className="grid grid-cols-2 gap-3">
+        <MetricCard
+          label="Revenue (TTM)"
+          value={revenue != null ? `${symbol}${(convert(revenue) / 1e9).toFixed(2)}B` : '—'}
+          interpretation={revenue != null ? (revenue > 0 ? 'Total sales in the past 12 months' : 'Negative revenue — data may be unavailable') : 'Data unavailable'}
+          trend={revenue != null && revenue > 0 ? 'up' : 'neutral'}
+        />
+        <MetricCard
+          label="Net Income (TTM)"
+          value={netIncome != null ? `${symbol}${(convert(netIncome) / 1e9).toFixed(2)}B` : '—'}
+          interpretation={netIncome == null ? 'Data unavailable' : netIncome > 0 ? 'Company is profitable' : 'Company is running at a loss'}
+          trend={netIncome != null && netIncome > 0 ? 'up' : 'down'}
+        />
+        <MetricCard
+          label="Revenue Growth (YoY)"
+          value={fmt(revGrowthYoY, '', '%', 1)}
+          interpretation={revGrowthYoY == null ? 'Data unavailable' : revGrowthYoY > 15 ? 'Strong year-on-year revenue growth' : revGrowthYoY > 0 ? 'Steady growth vs last year' : 'Revenue declined vs last year'}
+          trend={revGrowthYoY != null && revGrowthYoY > 0 ? 'up' : 'down'}
+        />
+        <MetricCard
+          label="Profit Margin"
+          value={fmt(profitMargin, '', '%', 1)}
+          interpretation={profitMargin == null ? 'Data unavailable' : profitMargin > 20 ? 'High margin — very profitable business' : profitMargin > 10 ? 'Healthy profit margin' : profitMargin > 0 ? 'Thin margin — low pricing power' : 'Loss-making — costs exceed revenue'}
+          trend={profitMargin != null && profitMargin > 10 ? 'up' : profitMargin != null && profitMargin > 0 ? 'warning' : 'down'}
+        />
       </div>
     </div>
   )

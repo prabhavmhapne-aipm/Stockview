@@ -58,7 +58,7 @@ export default function PriceChart() {
   const firstClose = convertedCandles?.[0]?.close ?? 0
   const lastClose  = convertedCandles?.[convertedCandles.length - 1]?.close ?? 0
   const isUp = lastClose >= firstClose
-  const strokeColor = isUp ? '#00c4a0' : '#f43f5e'
+  const strokeColor = isUp ? '#28EBCF' : '#f43f5e'
   const gradientId  = 'priceGradient'
   const tickCount   = 6
   const step = convertedCandles && convertedCandles.length > tickCount
@@ -95,24 +95,24 @@ export default function PriceChart() {
                 <stop offset="95%" stopColor={strokeColor} stopOpacity={0}    />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1a2540" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#2c2e31" vertical={false} />
             <XAxis
               dataKey="timeLabel"
-              tick={{ fill: '#3a5070', fontSize: 11 }}
+              tick={{ fill: '#4a4f56', fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               interval={step - 1}
             />
             <YAxis
-              tick={{ fill: '#3a5070', fontSize: 11 }}
+              tick={{ fill: '#4a4f56', fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               tickFormatter={(v) => `${symbol}${v.toFixed(0)}`}
               width={60}
               domain={['auto', 'auto']}
             />
-            <Tooltip content={<CustomTooltip symbol={symbol} />} cursor={{ stroke: '#1a2540', strokeWidth: 1 }} />
-            <ReferenceLine y={firstClose} stroke="#1a2540" strokeDasharray="4 4" />
+            <Tooltip content={<CustomTooltip symbol={symbol} />} cursor={{ stroke: '#2c2e31', strokeWidth: 1 }} />
+            <ReferenceLine y={firstClose} stroke="#2c2e31" strokeDasharray="4 4" />
             <Area
               type="monotone"
               dataKey="close"
@@ -120,7 +120,7 @@ export default function PriceChart() {
               strokeWidth={1.5}
               fill={`url(#${gradientId})`}
               dot={false}
-              activeDot={{ r: 4, fill: strokeColor, stroke: '#07090f', strokeWidth: 2 }}
+              activeDot={{ r: 4, fill: strokeColor, stroke: '#101112', strokeWidth: 2 }}
             />
           </AreaChart>
         </ResponsiveContainer>
